@@ -1,4 +1,12 @@
 
+BufferPart::BufferPart(void) :
+  real_buffer_(nullptr)
+, start_idx_(0)
+, size_(0)
+, data_idx_(0)
+{}
+
+
 BufferPart::BufferPart(std::vector<byte_t>* real_buffer,
                        const std::size_t start_idx,
                        const std::size_t size) noexcept :

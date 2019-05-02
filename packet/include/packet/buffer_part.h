@@ -18,6 +18,8 @@ namespace packet {
  */
 class BufferPart {
   public:
+    BufferPart(void);
+
     /**
      * @brief Construct it from the real buffer that must be allocated from start_idx till
      *        start_idx + size

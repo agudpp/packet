@@ -39,6 +39,13 @@ class BufferPart {
     remainingSize(void) const;
 
     /**
+     * @brief Returns the size of the data readed so far for this buffer
+     * @return the size of the data readed so far for this buffer
+     */
+    inline std::size_t
+    dataSize(void) const;
+
+    /**
      * @brief Returns the full size of the buffer
      * @return the full size of the buffer
      */
@@ -56,12 +63,12 @@ class BufferPart {
      * @brief Append family methods will be used to append more data to the buffer.
      * @param data the data to be appended
      * @param len the len of the data to be appended
-     * @return true if we appended all requested, false otherwise
+     * @return the amount of bytes added
      * @note that we will append at maximum min(remainingSize(), len) bytes
      */
-    bool
+    std::size_t
     append(const byte_t* data, const std::size_t len);
-    bool
+    std::size_t
     append(const std::vector<byte_t>& data);
 
     /**
@@ -77,13 +84,31 @@ class BufferPart {
     remainingBuffer(void);
 
     /**
+     * @brief Returns the real buffer associated to this buffer part
+     * @return the real buffer pointer associated
+     */
+    inline std::vector<byte_t>*
+    realBuffer(void);
+
+    /**
      * @brief Provides a way to notify the buffer that we added more data into the buffer
      *        writing it directly on it (useful when reading from sockets for example)
      * @param data_len_added the number of bytes added to the buffer
-     * @return true if correct, false otherwise
+     * @return amount of bytes added
      */
-    bool
+    std::size_t
     updateDataOffset(const std::size_t data_len_added);
+
+    /**
+     * @brief Reinterpret the current buffer as an specific type.
+     * @note we assert that the data size should be >= current type casted.
+     */
+    template<typename T>
+    T* parseAs(void) const
+    {
+      ASSERT(sizeof (T) <= dataSize());
+      return reinterpret_cast<T*>(buffer());
+    }
 
 
   private:

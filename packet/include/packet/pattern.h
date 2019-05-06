@@ -3,7 +3,7 @@
 
 #include <cstring>
 #include <cstdint>
-#include <array>
+#include <vector>
 
 #include <packet/defs.h>
 
@@ -19,36 +19,56 @@ namespace packet {
  *    static inline void copyTo(byte_t* dest)
  *  };
  */
+class Pattern {
+  public:
+    Pattern(const std::vector<byte_t>& pattern);
 
-template<unsigned int N>
-static std::array<byte_t, N> buildArray(void)
-{
-  std::array<byte_t, N> result;
-  for (unsigned int i = 0; i < N; i++) {
-    result[i] = 0xAF; // random but fixed
-  }
-  return result;
-}
+    inline std::size_t
+    size(void) const;
 
-template <unsigned int N>
-struct SimplePattern {
-    static const std::array<byte_t, N> pattern_data = buildArray<N>();
-    static inline std::size_t size(void) { return N; }
-    static inline bool areEqual(const byte_t* data)
-    {
-      for (unsigned int i = 0; i < N; i++) {
-        if (pattern_data[i] != data[i]) {
-          return false;
-        }
-      }
-      return true;
-    }
-    static inline void copyTo(byte_t* dest)
-    {
-      std::memcpy(dest, pattern_data.data(), pattern_data.size());
-    }
+    inline bool
+    operator==(const byte_t* data) const;
+    inline bool
+    operator==(const std::vector<byte_t>& data) const;
+
+    inline void
+    copyTo(byte_t* dest) const;
+
+  private:
+    std::vector<byte_t> pattern_data_;
 };
 
+
+
+// TODO move to impl file
+Pattern::Pattern(const std::vector<byte_t>& pattern) :
+  pattern_data_(pattern)
+{
+}
+
+inline std::size_t
+Pattern::size(void) const
+{
+  return pattern_data_.size();
+}
+
+inline bool
+Pattern::operator==(const byte_t* data) const
+{
+  return std::memcmp(data, pattern_data_.data(), size()) == 0;
+}
+
+inline bool
+Pattern::operator==(const std::vector<byte_t>& data) const
+{
+  return (*this) == data.data();
+}
+
+inline void
+Pattern::copyTo(byte_t* dest) const
+{
+  std::memcpy(dest, pattern_data_.data(), pattern_data_.size());
+}
 
 }
 

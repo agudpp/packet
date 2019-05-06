@@ -32,23 +32,30 @@ BufferPart::fullSize(void) const
   return size_;
 }
 
+inline std::size_t
+BufferPart::dataSize(void) const
+{
+  return data_idx_ - start_idx_;
+}
+
 inline bool
 BufferPart::isFull(void) const
 {
   return data_idx_ >= (start_idx_ + size_);
 }
 
-bool
+std::size_t
 BufferPart::append(const byte_t* data, const std::size_t len)
 {
   const std::size_t to_copy = std::min(remainingSize(), len);
   std::memcpy(static_cast<void*>(remainingBuffer()),
               static_cast<const void*>(data),
               to_copy);
-  return to_copy == len;
+  data_idx_ += to_copy;
+  return to_copy;
 }
 
-bool
+std::size_t
 BufferPart::append(const std::vector<byte_t>& data)
 {
   return append(data.data(), data.size());
@@ -72,10 +79,16 @@ BufferPart::remainingBuffer(void)
   return isFull() ? nullptr : &((*real_buffer_)[start_idx_ + data_idx_]);
 }
 
-bool
+inline std::vector<byte_t>*
+BufferPart::realBuffer(void)
+{
+  return real_buffer_;
+}
+
+std::size_t
 BufferPart::updateDataOffset(const std::size_t data_len_added)
 {
   const std::size_t to_add = std::min(data_len_added, remainingSize());
   data_idx_ += data_len_added;
-  return to_add == data_len_added;
+  return to_add;
 }

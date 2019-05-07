@@ -34,6 +34,9 @@ class Pattern {
     inline void
     copyTo(byte_t* dest) const;
 
+    inline const byte_t*
+    data(void) const;
+
   private:
     std::vector<byte_t> pattern_data_;
 };
@@ -68,6 +71,12 @@ inline void
 Pattern::copyTo(byte_t* dest) const
 {
   std::memcpy(dest, pattern_data_.data(), pattern_data_.size());
+}
+
+inline const byte_t*
+Pattern::data(void) const
+{
+  return pattern_data_.data();
 }
 
 }

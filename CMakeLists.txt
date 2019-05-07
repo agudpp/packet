@@ -49,14 +49,10 @@ set(SRC_LIST ${SRC_LIST}
 
 set(HEADERS_LIST ${HEADERS_LIST}
   ${INCLUDE_ROOT_DIR}/packet/debug_helper.h
+  ${INCLUDE_ROOT_DIR}/packet/test_defs.h
   ${INCLUDE_ROOT_DIR}/packet/defs.h
   ${INCLUDE_ROOT_DIR}/packet/buffer_part.h
   ${INCLUDE_ROOT_DIR}/packet/buffer_part_impl.h
-  ${INCLUDE_ROOT_DIR}/packet/section_handler_base.h
-  ${INCLUDE_ROOT_DIR}/packet/pattern_section_handler.h
-  ${INCLUDE_ROOT_DIR}/packet/data_section_handler.h
-  ${INCLUDE_ROOT_DIR}/packet/data_part.h
-  ${INCLUDE_ROOT_DIR}/packet/tail_part.h
   ${INCLUDE_ROOT_DIR}/packet/packet.h
 )
 

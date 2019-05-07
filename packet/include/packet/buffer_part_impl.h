@@ -9,13 +9,17 @@ BufferPart::BufferPart(void) :
 
 BufferPart::BufferPart(std::vector<byte_t>* real_buffer,
                        const std::size_t start_idx,
-                       const std::size_t size) noexcept :
+                       const std::size_t size,
+                       bool auto_resize) noexcept :
   real_buffer_(real_buffer)
 , start_idx_(start_idx)
 , size_(size)
 , data_idx_(start_idx)
 {
   ASSERT_PTR(real_buffer_);
+  if (auto_resize) {
+    real_buffer_->resize(std::max(real_buffer_->size(), (start_idx_ + size_)));
+  }
   ASSERT(real_buffer_->size() >= (start_idx_ + size_));
 }
 
@@ -48,9 +52,7 @@ std::size_t
 BufferPart::append(const byte_t* data, const std::size_t len)
 {
   const std::size_t to_copy = std::min(remainingSize(), len);
-  std::memcpy(static_cast<void*>(remainingBuffer()),
-              static_cast<const void*>(data),
-              to_copy);
+  std::memcpy(remainingBuffer(), data, to_copy);
   data_idx_ += to_copy;
   return to_copy;
 }
@@ -64,19 +66,19 @@ BufferPart::append(const std::vector<byte_t>& data)
 inline const byte_t*
 BufferPart::buffer(void) const
 {
-  return &((*real_buffer_)[start_idx_]);
+  return real_buffer_->data() + start_idx_;
 }
 
 inline byte_t*
 BufferPart::buffer(void)
 {
-  return &((*real_buffer_)[start_idx_]);
+  return real_buffer_->data() + start_idx_;
 }
 
 inline byte_t*
 BufferPart::remainingBuffer(void)
 {
-  return isFull() ? nullptr : &((*real_buffer_)[start_idx_ + data_idx_]);
+  return isFull() ? nullptr : (real_buffer_->data() + data_idx_);
 }
 
 inline std::vector<byte_t>*

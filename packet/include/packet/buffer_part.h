@@ -26,10 +26,12 @@ class BufferPart {
      * @param real_buffer the real buffer that must be allocated
      * @param start_idx the starting index of the buffer part
      * @param size the size of the buffer part
+     * @param auto_resize flag indicating if we should resize the real buffer or not
      */
     BufferPart(std::vector<byte_t>* real_buffer,
                const std::size_t start_idx,
-               const std::size_t size) noexcept;
+               const std::size_t size,
+               bool auto_resize = true) noexcept;
 
     /**
      * @brief How many bytes we still need to fill for completing the buffer
@@ -104,10 +106,10 @@ class BufferPart {
      * @note we assert that the data size should be >= current type casted.
      */
     template<typename T>
-    T* parseAs(void) const
+    const T* parseAs(void) const
     {
       ASSERT(sizeof (T) <= dataSize());
-      return reinterpret_cast<T*>(buffer());
+      return reinterpret_cast<const T*>(buffer());
     }
 
 

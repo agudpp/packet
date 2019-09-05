@@ -54,6 +54,8 @@ set(HEADERS_LIST ${HEADERS_LIST}
   ${INCLUDE_ROOT_DIR}/packet/buffer_part.h
   ${INCLUDE_ROOT_DIR}/packet/buffer_part_impl.h
   ${INCLUDE_ROOT_DIR}/packet/packet.h
+  ${INCLUDE_ROOT_DIR}/packet/packet_impl.h
+  ${INCLUDE_ROOT_DIR}/packet/packet_helper.h
 )
 
 set(LIBS_DEPS "")

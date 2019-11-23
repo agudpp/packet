@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <limits>
 #include <iostream>
+#include <array>
 
 #include <packet/defs.h>
 #include <packet/buffer_part.h>
@@ -19,45 +20,97 @@ namespace packet {
  */
 class Packet {
   public:
+
     enum class Status {
       INCOMPLETE,
       INVALID,
       COMPLETE
     };
 
-  public:
-    Packet(const data_len_t max_data_len = std::numeric_limits<data_len_t>::max(),
-           const Pattern& head_pattern = std::vector<byte_t>{0xAF, 0xFA},
-           const Pattern& tail_pattern = std::vector<byte_t>{0xFF});
+    /**
+     * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
+     */
+    constexpr static std::array<byte_t, 2> HEAD_PATTERN = std::array<byte_t, 2>{0xAF, 0xFA};
+    constexpr static std::array<byte_t, 2> TAIL_PATTERN = std::array<byte_t, 2>{0xAF, 0xFA};
 
+    /**
+     * @brief MAX_DATA_LEN Definition of how many bytes a packet can have, otherwise will be
+     *        considered invalid and discarded (when parsing it).
+     */
+    static constexpr data_len_t MAX_DATA_LEN = std::numeric_limits<data_len_t>::max();
+
+  public:
+    Packet(void);
+
+    /**
+     * @brief Return the current status
+     * @return the current status
+     */
     inline Status
     status(void) const;
 
+
+    /**
+     * @brief Interface for adding data to the packet
+     * @param data the raw data to be added
+     * @param len the length of the data to be added
+     * @return the amount of bytes added
+     */
     std::size_t
     appendData(const byte_t* data, const std::size_t len);
 
+    /**
+     * @brief Returns the remaining buffer pointer
+     * @return the remaining buffer pointer
+     */
     inline byte_t*
     remainingBuffer(void);
 
+    /**
+     * @brief Returns the remaining bytes that can be added to the packet
+     * @return the remaining bytes that can be added to the packet
+     */
     inline std::size_t
     remainingBytes(void) const;
 
+    /**
+     * @brief If the data was added from a different interface than "appendData" (for example
+     *        copying directly into the buffer), this method should be called to update
+     *        the amount of data writed on the buffer
+     * @param data_len_added the data writed on the buffer
+     * @return the amount of bytes actually handled
+     */
     std::size_t
     updateDataOffset(const std::size_t data_len_added);
 
 
-    // returns the packet data, we need to have status == completed
+    /**
+     * @brief The amount of data of de packet without headers and extra fields. Note that
+     *        we must have status == completed in order to properly have this value
+     * @return the amount of data of the packet (without headers)
+     */
     inline std::size_t
     dataLen(void) const;
 
-    // returns the data ptr of size dataLen()
+    /**
+     * @brief Returns the pointer to the data buffer of the packet, this should have dataLen()
+     *        bytes
+     * @return the pointer to the data buffer of the packet, this should have dataLen() bytes
+     * @note that the status == COMPLETED
+     */
     inline const byte_t*
     data(void) const;
 
-    // make sure Status == Completed! otherwise this data is not complete..
+    /**
+     * @brief Returns the full buffer with headers, size and data. Make sure status == Completed
+     * @return the full buffer with headers, size and data
+     * @note take into account that status == Completed
+     */
     const std::vector<byte_t>&
     allData(void) const;
 
+
+    // TODO: move this to the writer
     bool
     serialize(const byte_t* data, const data_len_t len, std::ostream& out) const;
 
@@ -97,16 +150,14 @@ class Packet {
     Status status_;
     std::vector<byte_t> buffer_;
     BufferPart buffer_part_;
-    data_len_t max_len_;
     data_len_t pkt_data_len_;
-    Pattern head_pattern_;
-    Pattern tail_pattern_;
     std::size_t current_data_idx_;
 };
 
 
 
 #include <packet/packet_impl.h>
+
 
 }
 

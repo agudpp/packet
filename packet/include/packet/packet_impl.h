@@ -1,4 +1,8 @@
 
+constexpr std::array<byte_t, 2> Packet::HEAD_PATTERN;
+constexpr std::array<byte_t, 2> Packet::TAIL_PATTERN;
+
+
 
 void
 Packet::newDataAdded(void)
@@ -36,7 +40,7 @@ Packet::nextState(void) const
   switch (reading_state_) {
     case State::HEAD_PATTERN: return State::DATA_SIZE;
     case State::DATA_SIZE: return State::DATA;
-    case State::DATA: return tail_pattern_.size() > 0 ? State::TAIL_PATTERN : State::NONE;
+    case State::DATA: return (TAIL_PATTERN.size() > 0 ? State::TAIL_PATTERN : State::NONE);
     case State::TAIL_PATTERN: return State::NONE;
     default:
       ASSERT(false && "invalid state");
@@ -51,7 +55,7 @@ Packet::setupState(const State state)
   reading_state_ = state;
   switch (reading_state_) {
     case State::HEAD_PATTERN: {
-      buffer_part_ = BufferPart(&buffer_, 0, head_pattern_.size());
+      buffer_part_ = BufferPart(&buffer_, 0, HEAD_PATTERN.size());
       break;
     }
     case State::DATA_SIZE: {
@@ -64,7 +68,7 @@ Packet::setupState(const State state)
       break;
     }
     case State::TAIL_PATTERN: {
-      buffer_part_ = BufferPart(&buffer_, current_data_idx_, tail_pattern_.size());
+      buffer_part_ = BufferPart(&buffer_, current_data_idx_, TAIL_PATTERN.size());
       break;
     }
     case State::NONE: {
@@ -78,10 +82,10 @@ bool
 Packet::verifyCurrentStateData(void) const
 {
   switch (reading_state_) {
-    case State::HEAD_PATTERN: return head_pattern_ == buffer_part_.buffer();
-    case State::DATA_SIZE: return (*buffer_part_.parseAs<data_len_t>()) <= max_len_;
+    case State::HEAD_PATTERN: return std::memcmp(HEAD_PATTERN.data(), buffer_part_.buffer(), std::min(HEAD_PATTERN.size(), buffer_part_.dataSize())) == 0;
+    case State::DATA_SIZE: return (*buffer_part_.parseAs<data_len_t>()) <= MAX_DATA_LEN;
     case State::DATA: return true;
-    case State::TAIL_PATTERN: return tail_pattern_ == buffer_part_.buffer();
+    case State::TAIL_PATTERN: return std::memcmp(TAIL_PATTERN.data(), buffer_part_.buffer(), std::min(TAIL_PATTERN.size(), buffer_part_.dataSize())) == 0;
     default:
       ASSERT(false && "invalid state");
   }
@@ -91,21 +95,16 @@ Packet::verifyCurrentStateData(void) const
 inline std::size_t
 Packet::dataPtrIndex(void) const
 {
-  return head_pattern_.size() + sizeof(data_len_t);
+  return HEAD_PATTERN.size() + sizeof(data_len_t);
 }
 
 
-Packet::Packet(const data_len_t max_data_len,
-               const Pattern& head_pattern,
-               const Pattern& tail_pattern) :
+Packet::Packet() :
   status_(Status::INCOMPLETE)
-, max_len_(max_data_len)
 , pkt_data_len_(0)
-, head_pattern_(head_pattern)
-, tail_pattern_(tail_pattern)
 , current_data_idx_(0)
 {
-  setupState(head_pattern.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
+  setupState(HEAD_PATTERN.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
 }
 
 
@@ -161,18 +160,19 @@ bool
 Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out) const
 {
   ASSERT_PTR(data);
-  if (head_pattern_.size() > 0) {
-    out.write(reinterpret_cast<const char*>(head_pattern_.data()), head_pattern_.size());
+  if (HEAD_PATTERN.size() > 0) {
+    out.write(reinterpret_cast<const char*>(HEAD_PATTERN.data()), HEAD_PATTERN.size());
   }
   // TODO: write the size properly here, little / big endian
   out.write(reinterpret_cast<const char*>(&len), sizeof(data_len_t));
 
   out.write(reinterpret_cast<const char*>(data), len);
 
-  if (tail_pattern_.size() > 0) {
-    out.write(reinterpret_cast<const char*>(tail_pattern_.data()), tail_pattern_.size());
+  if (TAIL_PATTERN.size() > 0) {
+    out.write(reinterpret_cast<const char*>(TAIL_PATTERN.data()), TAIL_PATTERN.size());
   }
   return true;
 }
+
 
 

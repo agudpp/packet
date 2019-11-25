@@ -16,11 +16,11 @@ BufferPart::BufferPart(std::vector<byte_t>* real_buffer,
 , size_(size)
 , data_idx_(start_idx)
 {
-  ASSERT_PTR(real_buffer_);
+  PKT_ASSERT_PTR(real_buffer_);
   if (auto_resize) {
     real_buffer_->resize(std::max(real_buffer_->size(), (start_idx_ + size_)));
   }
-  ASSERT(real_buffer_->size() >= (start_idx_ + size_));
+  PKT_ASSERT(real_buffer_->size() >= (start_idx_ + size_));
 }
 
 

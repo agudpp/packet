@@ -14,7 +14,7 @@ readPacket(const std::string& p)
   Packet pkt;
   std::size_t data_ptr = 0;
   while (pkt.status() == Packet::Status::INCOMPLETE && data_ptr < p.size()) {
-    ASSERT(pkt.remainingBytes() > 0);
+    PKT_ASSERT(pkt.remainingBytes() > 0);
     const std::size_t to_read = std::min(pkt.remainingBytes(), p.size() - data_ptr);
     const std::size_t read = pkt.appendData(reinterpret_cast<const byte_t*>(p.data() + data_ptr), to_read);
 
@@ -29,7 +29,7 @@ getSerializedPacket(const std::string& data)
 {
   Packet p;
   std::stringstream ss;
-  ASSERT(p.serialize(reinterpret_cast<const byte_t*>(data.data()), data.size(), ss));
+  PKT_ASSERT(p.serialize(reinterpret_cast<const byte_t*>(data.data()), data.size(), ss));
 
   const std::string result = ss.str();
   const data_len_t* len_part = reinterpret_cast<const data_len_t*>(result.data() + 2);
@@ -80,8 +80,8 @@ void testSerializeLen(void)
 
 int main(void)
 {
-//  testSerializeLen();
-//  testPattern();
+  testSerializeLen();
+  testPattern();
   RUN_ALL_TESTS;
 
   return 0;

@@ -16,7 +16,7 @@ Packet::newDataAdded(void)
   current_data_idx_ += buffer_part_.dataSize();
 
   if (!verifyCurrentStateData()) {
-    LOG_ERROR("packet is not valid for state " << int(reading_state_));
+    PKT_LOG_ERROR("packet is not valid for state " << int(reading_state_));
     reading_state_ = State::NONE;
     status_ = Status::INVALID;
   } else {
@@ -43,7 +43,7 @@ Packet::nextState(void) const
     case State::DATA: return (TAIL_PATTERN.size() > 0 ? State::TAIL_PATTERN : State::NONE);
     case State::TAIL_PATTERN: return State::NONE;
     default:
-      ASSERT(false && "invalid state");
+      PKT_ASSERT(false && "invalid state");
   }
   return State::NONE;
 }
@@ -87,7 +87,7 @@ Packet::verifyCurrentStateData(void) const
     case State::DATA: return true;
     case State::TAIL_PATTERN: return std::memcmp(TAIL_PATTERN.data(), buffer_part_.buffer(), std::min(TAIL_PATTERN.size(), buffer_part_.dataSize())) == 0;
     default:
-      ASSERT(false && "invalid state");
+      PKT_ASSERT(false && "invalid state");
   }
   return false;
 }
@@ -117,7 +117,7 @@ Packet::status(void) const
 std::size_t
 Packet::appendData(const byte_t* data, const std::size_t len)
 {
-  ASSERT_PTR(data);
+  PKT_ASSERT_PTR(data);
   const std::size_t result = buffer_part_.append(data, len);
   newDataAdded();
   return result;
@@ -159,7 +159,7 @@ Packet::data(void) const
 bool
 Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out) const
 {
-  ASSERT_PTR(data);
+  PKT_ASSERT_PTR(data);
   if (HEAD_PATTERN.size() > 0) {
     out.write(reinterpret_cast<const char*>(HEAD_PATTERN.data()), HEAD_PATTERN.size());
   }

@@ -103,12 +103,12 @@ class BufferPart {
 
     /**
      * @brief Reinterpret the current buffer as an specific type.
-     * @note we assert that the data size should be >= current type casted.
+     * @note we PKT_ASSERT that the data size should be >= current type casted.
      */
     template<typename T>
     const T* parseAs(void) const
     {
-      ASSERT(sizeof (T) <= dataSize());
+      PKT_ASSERT(sizeof (T) <= dataSize());
       return reinterpret_cast<const T*>(buffer());
     }
 

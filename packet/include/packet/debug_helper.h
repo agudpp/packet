@@ -24,30 +24,30 @@
 #endif
 
 
-// Assertions
-#define ASSERT(x)   {const bool condition = (x); if(!condition){LOG_ERROR("Assert failed " #x "\n"); assert(false);}}
-#define ASSERT_PTR(x) ASSERT(x != nullptr)
+// PKT_ASSERTions
+#define PKT_ASSERT(x)   {const bool condition = (x); if(!condition){PKT_LOG_ERROR("PKT_ASSERT failed " #x "\n"); assert(false);}}
+#define PKT_ASSERT_PTR(x) PKT_ASSERT(x != nullptr)
 
-#define _LOG_SET_HEADER(buff, log_type) buff << "[" << __FILE__ << ", " << __FUNCTION__ << ", " << __LINE__ << "] " << log_type << ": "
-#define _LOG_BUFF(out, log_type, x) _LOG_SET_HEADER(out, log_type); out << x << std::endl;
+#define _PKT_LOG_SET_HEADER(buff, log_type) buff << "[" << __FILE__ << ", " << __FUNCTION__ << ", " << __LINE__ << "] " << log_type << ": "
+#define _PKT_LOG_BUFF(out, log_type, x) _PKT_LOG_SET_HEADER(out, log_type); out << x << std::endl;
 
 
 // logging
-#define LOG_ERROR(x) _LOG_BUFF(std::cerr, "ERROR", x)
+#define PKT_LOG_ERROR(x) _PKT_LOG_BUFF(std::cerr, "ERROR", x)
 
-#define LOG_WARNING(x) _LOG_BUFF(std::cerr, "WARNING", x)
+#define PKT_LOG_WARNING(x) _PKT_LOG_BUFF(std::cerr, "WARNING", x)
 
-#define LOG_INFO(x) _LOG_BUFF(std::cout, "INFO", x)
+#define PKT_LOG_INFO(x) _PKT_LOG_BUFF(std::cout, "INFO", x)
 
 
 
 #else
 
-#define ASSERT(x)
-#define ASSERT_PTR(x)
-#define LOG_ERROR(x) _LOG_BUFF(std::cerr, "ERROR", x)
-#define LOG_WARNING(x)
-#define LOG_INFO(x)
+#define PKT_ASSERT(x)
+#define PKT_ASSERT_PTR(x)
+#define PKT_LOG_ERROR(x) _PKT_LOG_BUFF(std::cerr, "ERROR", x)
+#define PKT_LOG_WARNING(x)
+#define PKT_LOG_INFO(x)
 
 #endif
 

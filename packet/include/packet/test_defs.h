@@ -51,7 +51,7 @@ struct TestCase {
   static _Test_##test_name _instance_##test_name;
 
 
-#define _EVAL_COND(cond) if(!(cond)) { failed_ = true; LOG_ERROR(#cond); }
+#define _EVAL_COND(cond) if(!(cond)) { failed_ = true; PKT_LOG_ERROR(#cond); }
 
 
 #define EXPECT_EQ(a, b) _EVAL_COND(a == b)

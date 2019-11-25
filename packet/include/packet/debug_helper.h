@@ -2,7 +2,7 @@
 #define DEBUG_HELPER_H
 
 
-#if defined(DEBUG)
+#if defined(DEBUG) || defined(DEBUG_LOG_ENABLE)
 
 #include <cassert>
 #include <iostream>
@@ -43,6 +43,7 @@
 
 #else
 
+#define _PKT_LOG_BUFF(out, log_type, x)
 #define PKT_ASSERT(x)
 #define PKT_ASSERT_PTR(x)
 #define PKT_LOG_ERROR(x) _PKT_LOG_BUFF(std::cerr, "ERROR", x)

@@ -49,6 +49,11 @@ class Packet {
     inline Status
     status(void) const;
 
+    /**
+     * @brief Reset the current packet
+     */
+    inline void
+    reset(void);
 
     /**
      * @brief Interface for adding data to the packet
@@ -111,8 +116,8 @@ class Packet {
 
 
     // TODO: move this to the writer
-    bool
-    serialize(const byte_t* data, const data_len_t len, std::ostream& out) const;
+    static bool
+    serialize(const byte_t* data, const data_len_t len, std::ostream& out);
 
 
   private:

@@ -2,7 +2,7 @@
 #define DEBUG_HELPER_H
 
 
-#if defined(DEBUG)
+#if defined(DEBUG) || defined(DEBUG_LOG_ENABLE)
 
 #include <cassert>
 #include <iostream>
@@ -42,6 +42,8 @@
 
 
 #else
+
+#define _LOG_BUFF(out, log_type, x)
 
 #define ASSERT(x)
 #define ASSERT_PTR(x)

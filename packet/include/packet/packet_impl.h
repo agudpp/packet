@@ -114,6 +114,16 @@ Packet::status(void) const
   return status_;
 }
 
+inline void
+Packet::reset(void)
+{
+  status_ = Status::INCOMPLETE;
+  pkt_data_len_ = 0;
+  current_data_idx_ = 0;
+  buffer_.clear();
+  setupState(HEAD_PATTERN.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
+}
+
 std::size_t
 Packet::appendData(const byte_t* data, const std::size_t len)
 {
@@ -157,7 +167,7 @@ Packet::data(void) const
 }
 
 bool
-Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out) const
+Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out)
 {
   ASSERT_PTR(data);
   if (HEAD_PATTERN.size() > 0) {

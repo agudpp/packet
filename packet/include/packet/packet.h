@@ -30,8 +30,8 @@ class Packet {
     /**
      * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
      */
-    constexpr static std::array<byte_t, 2> HEAD_PATTERN = std::array<byte_t, 2>{0xAF, 0xFA};
-    constexpr static std::array<byte_t, 2> TAIL_PATTERN = std::array<byte_t, 2>{0xAF, 0xFA};
+    static constexpr std::array<byte_t, 2> HEAD_PATTERN{0xAF, 0xFA};
+    static constexpr std::array<byte_t, 2> TAIL_PATTERN{0xAF, 0xFA};
 
     /**
      * @brief MAX_DATA_LEN Definition of how many bytes a packet can have, otherwise will be
@@ -40,7 +40,7 @@ class Packet {
     static constexpr data_len_t MAX_DATA_LEN = std::numeric_limits<data_len_t>::max();
 
   public:
-    Packet(void);
+    inline Packet(void);
 
     /**
      * @brief Return the current status
@@ -61,7 +61,7 @@ class Packet {
      * @param len the length of the data to be added
      * @return the amount of bytes added
      */
-    std::size_t
+    inline std::size_t
     appendData(const byte_t* data, const std::size_t len);
 
     /**
@@ -85,7 +85,7 @@ class Packet {
      * @param data_len_added the data writed on the buffer
      * @return the amount of bytes actually handled
      */
-    std::size_t
+    inline std::size_t
     updateDataOffset(const std::size_t data_len_added);
 
 
@@ -111,12 +111,12 @@ class Packet {
      * @return the full buffer with headers, size and data
      * @note take into account that status == Completed
      */
-    const std::vector<byte_t>&
+    inline const std::vector<byte_t>&
     allData(void) const;
 
 
     // TODO: move this to the writer
-    static bool
+    static inline bool
     serialize(const byte_t* data, const data_len_t len, std::ostream& out);
 
 
@@ -132,7 +132,7 @@ class Packet {
 
   private:
 
-    void
+    inline void
     newDataAdded(void);
 
     inline bool
@@ -141,10 +141,10 @@ class Packet {
     inline State
     nextState(void) const;
 
-    void
+    inline void
     setupState(const State state);
 
-    bool
+    inline bool
     verifyCurrentStateData(void) const;
 
     inline std::size_t
@@ -162,7 +162,6 @@ class Packet {
 
 
 #include <packet/packet_impl.h>
-
 
 }
 

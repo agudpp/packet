@@ -21,7 +21,7 @@ namespace packet {
  */
 class Pattern {
   public:
-    Pattern(const std::vector<byte_t>& pattern);
+    inline Pattern(const std::vector<byte_t>& pattern);
 
     inline std::size_t
     size(void) const;
@@ -44,7 +44,7 @@ class Pattern {
 
 
 // TODO move to impl file
-Pattern::Pattern(const std::vector<byte_t>& pattern) :
+inline Pattern::Pattern(const std::vector<byte_t>& pattern) :
   pattern_data_(pattern)
 {
 }

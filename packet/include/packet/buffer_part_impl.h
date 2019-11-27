@@ -1,5 +1,5 @@
 
-BufferPart::BufferPart(void) :
+inline BufferPart::BufferPart(void) :
   real_buffer_(nullptr)
 , start_idx_(0)
 , size_(0)
@@ -7,10 +7,10 @@ BufferPart::BufferPart(void) :
 {}
 
 
-BufferPart::BufferPart(std::vector<byte_t>* real_buffer,
-                       const std::size_t start_idx,
-                       const std::size_t size,
-                       bool auto_resize) noexcept :
+inline BufferPart::BufferPart(std::vector<byte_t>* real_buffer,
+                              const std::size_t start_idx,
+                              const std::size_t size,
+                              bool auto_resize) noexcept :
   real_buffer_(real_buffer)
 , start_idx_(start_idx)
 , size_(size)
@@ -48,7 +48,7 @@ BufferPart::isFull(void) const
   return data_idx_ >= (start_idx_ + size_);
 }
 
-std::size_t
+inline std::size_t
 BufferPart::append(const byte_t* data, const std::size_t len)
 {
   const std::size_t to_copy = std::min(remainingSize(), len);
@@ -57,7 +57,7 @@ BufferPart::append(const byte_t* data, const std::size_t len)
   return to_copy;
 }
 
-std::size_t
+inline std::size_t
 BufferPart::append(const std::vector<byte_t>& data)
 {
   return append(data.data(), data.size());
@@ -87,7 +87,7 @@ BufferPart::realBuffer(void)
   return real_buffer_;
 }
 
-std::size_t
+inline std::size_t
 BufferPart::updateDataOffset(const std::size_t data_len_added)
 {
   const std::size_t to_add = std::min(data_len_added, remainingSize());

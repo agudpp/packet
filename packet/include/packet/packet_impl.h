@@ -1,10 +1,8 @@
 
-constexpr std::array<byte_t, 2> Packet::HEAD_PATTERN;
-constexpr std::array<byte_t, 2> Packet::TAIL_PATTERN;
 
 
 
-void
+inline void
 Packet::newDataAdded(void)
 {
   if (!canAddMoreData()) {
@@ -49,7 +47,7 @@ Packet::nextState(void) const
 }
 
 
-void
+inline void
 Packet::setupState(const State state)
 {
   reading_state_ = state;
@@ -78,7 +76,7 @@ Packet::setupState(const State state)
   }
 }
 
-bool
+inline bool
 Packet::verifyCurrentStateData(void) const
 {
   switch (reading_state_) {
@@ -99,7 +97,7 @@ Packet::dataPtrIndex(void) const
 }
 
 
-Packet::Packet() :
+inline Packet::Packet() :
   status_(Status::INCOMPLETE)
 , pkt_data_len_(0)
 , current_data_idx_(0)
@@ -124,7 +122,7 @@ Packet::reset(void)
   setupState(HEAD_PATTERN.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
 }
 
-std::size_t
+inline std::size_t
 Packet::appendData(const byte_t* data, const std::size_t len)
 {
   PKT_ASSERT_PTR(data);
@@ -145,7 +143,7 @@ Packet::remainingBytes(void) const
   return buffer_part_.remainingSize();
 }
 
-std::size_t
+inline std::size_t
 Packet::updateDataOffset(const std::size_t data_len_added)
 {
   const std::size_t result = buffer_part_.updateDataOffset(data_len_added);
@@ -166,7 +164,7 @@ Packet::data(void) const
   return dataLen() == 0 ? nullptr : &(buffer_[dataPtrIndex()]);
 }
 
-bool
+inline bool
 Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out)
 {
   PKT_ASSERT_PTR(data);

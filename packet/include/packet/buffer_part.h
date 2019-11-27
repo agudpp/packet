@@ -18,7 +18,7 @@ namespace packet {
  */
 class BufferPart {
   public:
-    BufferPart(void);
+    inline BufferPart(void);
 
     /**
      * @brief Construct it from the real buffer that must be allocated from start_idx till
@@ -28,10 +28,10 @@ class BufferPart {
      * @param size the size of the buffer part
      * @param auto_resize flag indicating if we should resize the real buffer or not
      */
-    BufferPart(std::vector<byte_t>* real_buffer,
-               const std::size_t start_idx,
-               const std::size_t size,
-               bool auto_resize = true) noexcept;
+    inline BufferPart(std::vector<byte_t>* real_buffer,
+                      const std::size_t start_idx,
+                      const std::size_t size,
+                      bool auto_resize = true) noexcept;
 
     /**
      * @brief How many bytes we still need to fill for completing the buffer
@@ -68,9 +68,9 @@ class BufferPart {
      * @return the amount of bytes added
      * @note that we will append at maximum min(remainingSize(), len) bytes
      */
-    std::size_t
+    inline std::size_t
     append(const byte_t* data, const std::size_t len);
-    std::size_t
+    inline std::size_t
     append(const std::vector<byte_t>& data);
 
     /**
@@ -98,7 +98,7 @@ class BufferPart {
      * @param data_len_added the number of bytes added to the buffer
      * @return amount of bytes added
      */
-    std::size_t
+    inline std::size_t
     updateDataOffset(const std::size_t data_len_added);
 
     /**

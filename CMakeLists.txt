@@ -44,7 +44,7 @@ include_directories(${INCLUDE_ROOT_DIR})
 
 # source
 set(SRC_LIST ${SRC_LIST}
-  ${SRC_ROOT_DIR}/test.cpp
+  ${SRC_ROOT_DIR}/packet.cpp
 )
 
 set(HEADERS_LIST ${HEADERS_LIST}
@@ -60,5 +60,14 @@ set(HEADERS_LIST ${HEADERS_LIST}
 
 set(LIBS_DEPS "")
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${HEADERS_LIST})
-target_link_libraries(${PROJECT_NAME} ${LIBS_DEPS})
+#add_executable(${PROJECT_NAME} ${SRC_LIST} ${HEADERS_LIST})
+#target_link_libraries(${PROJECT_NAME} ${LIBS_DEPS})
+
+add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
+if (CMAKE_SYSTEM_NAME STREQUAL Android)
+  set_target_properties(${PROJECT_NAME} PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PROJECT_NAME}.so)
+else()
+  set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${MODULE_DEPENDENCIES})

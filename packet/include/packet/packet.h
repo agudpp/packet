@@ -6,6 +6,7 @@
 #include <limits>
 #include <iostream>
 #include <array>
+#include <arpa/inet.h>
 
 #include <packet/defs.h>
 #include <packet/buffer_part.h>

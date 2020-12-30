@@ -61,7 +61,7 @@ Packet::setupState(const State state)
       break;
     }
     case State::DATA: {
-      pkt_data_len_ = (*buffer_part_.parseAs<data_len_t>());
+      pkt_data_len_ = ntohl((*buffer_part_.parseAs<data_len_t>()));
       buffer_part_ = BufferPart(&buffer_, current_data_idx_, pkt_data_len_);
       break;
     }
@@ -172,8 +172,8 @@ Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out)
     out.write(reinterpret_cast<const char*>(HEAD_PATTERN), sizeof(HEAD_PATTERN));
   }
   // TODO: write the size properly here, little / big endian
-  out.write(reinterpret_cast<const char*>(&len), sizeof(data_len_t));
-
+  const data_len_t wire_len = htonl(len);
+  out.write(reinterpret_cast<const char*>(&wire_len), sizeof(data_len_t));
   out.write(reinterpret_cast<const char*>(data), len);
 
   if (sizeof(TAIL_PATTERN) > 0) {

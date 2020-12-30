@@ -14,6 +14,12 @@
 
 
 namespace packet {
+/**
+ * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
+ */
+static constexpr const char HEAD_PATTERN = '<';
+static constexpr const char TAIL_PATTERN = '>';
+
 
 /**
  * @brief The Packet class provides an interface for reading a packet and verify if it is
@@ -28,12 +34,7 @@ class Packet {
       COMPLETE
     };
 
-    /**
-     * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
-     */
-    static constexpr const char* HEAD_PATTERN = "<";
-    static constexpr const char* TAIL_PATTERN = ">";
-
+    
     /**
      * @brief MAX_DATA_LEN Definition of how many bytes a packet can have, otherwise will be
      *        considered invalid and discarded (when parsing it).

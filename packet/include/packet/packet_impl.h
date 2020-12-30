@@ -38,7 +38,7 @@ Packet::nextState(void) const
   switch (reading_state_) {
     case State::HEAD_PATTERN: return State::DATA_SIZE;
     case State::DATA_SIZE: return State::DATA;
-    case State::DATA: return (TAIL_PATTERN.size() > 0 ? State::TAIL_PATTERN : State::NONE);
+    case State::DATA: return (sizeof(TAIL_PATTERN) > 0 ? State::TAIL_PATTERN : State::NONE);
     case State::TAIL_PATTERN: return State::NONE;
     default:
       PKT_ASSERT(false && "invalid state");
@@ -53,7 +53,7 @@ Packet::setupState(const State state)
   reading_state_ = state;
   switch (reading_state_) {
     case State::HEAD_PATTERN: {
-      buffer_part_ = BufferPart(&buffer_, 0, HEAD_PATTERN.size());
+      buffer_part_ = BufferPart(&buffer_, 0, sizeof(HEAD_PATTERN));
       break;
     }
     case State::DATA_SIZE: {
@@ -66,7 +66,7 @@ Packet::setupState(const State state)
       break;
     }
     case State::TAIL_PATTERN: {
-      buffer_part_ = BufferPart(&buffer_, current_data_idx_, TAIL_PATTERN.size());
+      buffer_part_ = BufferPart(&buffer_, current_data_idx_, sizeof(TAIL_PATTERN));
       break;
     }
     case State::NONE: {
@@ -80,10 +80,10 @@ inline bool
 Packet::verifyCurrentStateData(void) const
 {
   switch (reading_state_) {
-    case State::HEAD_PATTERN: return std::memcmp(HEAD_PATTERN.data(), buffer_part_.buffer(), std::min(HEAD_PATTERN.size(), buffer_part_.dataSize())) == 0;
+    case State::HEAD_PATTERN: return std::memcmp(HEAD_PATTERN, buffer_part_.buffer(), std::min(sizeof(HEAD_PATTERN), buffer_part_.dataSize())) == 0;
     case State::DATA_SIZE: return (*buffer_part_.parseAs<data_len_t>()) <= MAX_DATA_LEN;
     case State::DATA: return true;
-    case State::TAIL_PATTERN: return std::memcmp(TAIL_PATTERN.data(), buffer_part_.buffer(), std::min(TAIL_PATTERN.size(), buffer_part_.dataSize())) == 0;
+    case State::TAIL_PATTERN: return std::memcmp(TAIL_PATTERN, buffer_part_.buffer(), std::min(sizeof(TAIL_PATTERN), buffer_part_.dataSize())) == 0;
     default:
       PKT_ASSERT(false && "invalid state");
   }
@@ -93,7 +93,7 @@ Packet::verifyCurrentStateData(void) const
 inline std::size_t
 Packet::dataPtrIndex(void) const
 {
-  return HEAD_PATTERN.size() + sizeof(data_len_t);
+  return sizeof(HEAD_PATTERN) + sizeof(data_len_t);
 }
 
 
@@ -102,7 +102,7 @@ inline Packet::Packet() :
 , pkt_data_len_(0)
 , current_data_idx_(0)
 {
-  setupState(HEAD_PATTERN.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
+  setupState(sizeof(HEAD_PATTERN) > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
 }
 
 
@@ -119,7 +119,7 @@ Packet::reset(void)
   pkt_data_len_ = 0;
   current_data_idx_ = 0;
   buffer_.clear();
-  setupState(HEAD_PATTERN.size() > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
+  setupState(sizeof(HEAD_PATTERN) > 0 ? State::HEAD_PATTERN : State::DATA_SIZE);
 }
 
 inline std::size_t
@@ -168,16 +168,16 @@ inline bool
 Packet::serialize(const byte_t* data, const data_len_t len, std::ostream& out)
 {
   PKT_ASSERT_PTR(data);
-  if (HEAD_PATTERN.size() > 0) {
-    out.write(reinterpret_cast<const char*>(HEAD_PATTERN.data()), HEAD_PATTERN.size());
+  if (sizeof(HEAD_PATTERN) > 0) {
+    out.write(reinterpret_cast<const char*>(HEAD_PATTERN), sizeof(HEAD_PATTERN));
   }
   // TODO: write the size properly here, little / big endian
   out.write(reinterpret_cast<const char*>(&len), sizeof(data_len_t));
 
   out.write(reinterpret_cast<const char*>(data), len);
 
-  if (TAIL_PATTERN.size() > 0) {
-    out.write(reinterpret_cast<const char*>(TAIL_PATTERN.data()), TAIL_PATTERN.size());
+  if (sizeof(TAIL_PATTERN) > 0) {
+    out.write(reinterpret_cast<const char*>(TAIL_PATTERN), sizeof(TAIL_PATTERN));
   }
   return true;
 }

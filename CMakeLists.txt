@@ -6,8 +6,6 @@ project(packet)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed
-set(CMAKE_AUTOMOC ON)
 
 
 ################################################################################
@@ -28,7 +26,7 @@ set(INCLUDE_ROOT_DIR ${PRJ_ROOT_DIR}/packet/include)
 ################################################################################
 # define global variables for headers | sources | libs | etc
 
-set(COMMON_CXX_FLAGS "-std=c++11 -Wall ")
+set(COMMON_CXX_FLAGS "-std=c++14 -Wall ")
 if (DEBUG_MODE)
     set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -ggdb3")
     set(COMMON_DEFINITIONS "${COMMON_DEFINITIONS} -DDEBUG -DUSE_DEBUG")
@@ -43,9 +41,6 @@ add_definitions(${COMMON_DEFINITIONS})
 include_directories(${INCLUDE_ROOT_DIR})
 
 # source
-set(SRC_LIST ${SRC_LIST}
-  ${SRC_ROOT_DIR}/packet.cpp
-)
 
 set(HEADERS_LIST ${HEADERS_LIST}
   ${INCLUDE_ROOT_DIR}/packet/debug_helper.h
@@ -60,14 +55,7 @@ set(HEADERS_LIST ${HEADERS_LIST}
 
 set(LIBS_DEPS "")
 
-#add_executable(${PROJECT_NAME} ${SRC_LIST} ${HEADERS_LIST})
+add_executable(${PROJECT_NAME} packet/src/test.cpp ${HEADERS_LIST})
 #target_link_libraries(${PROJECT_NAME} ${LIBS_DEPS})
 
-add_library(${PROJECT_NAME} SHARED ${SRC_LIST} ${HEADERS_LIST})
-if (CMAKE_SYSTEM_NAME STREQUAL Android)
-  set_target_properties(${PROJECT_NAME} PROPERTIES IMPORTED_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${PROJECT_NAME}.so)
-else()
-  set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-endif()
-
-target_link_libraries(${PROJECT_NAME} ${MODULE_DEPENDENCIES})
+#target_link_libraries(${PROJECT_NAME} ${MODULE_DEPENDENCIES})

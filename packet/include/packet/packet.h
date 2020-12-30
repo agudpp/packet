@@ -30,8 +30,8 @@ class Packet {
     /**
      * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
      */
-    static constexpr std::array<byte_t, 2> HEAD_PATTERN{0xAF, 0xFA};
-    static constexpr std::array<byte_t, 2> TAIL_PATTERN{0xAF, 0xFA};
+    static constexpr const char* HEAD_PATTERN = "<";
+    static constexpr const char* TAIL_PATTERN = ">";
 
     /**
      * @brief MAX_DATA_LEN Definition of how many bytes a packet can have, otherwise will be

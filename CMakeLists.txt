@@ -19,8 +19,8 @@ endif ()
 
 # source root dir
 set(PRJ_ROOT_DIR ${PROJECT_SOURCE_DIR})
-set(SRC_ROOT_DIR ${PRJ_ROOT_DIR}/packet/src)
-set(INCLUDE_ROOT_DIR ${PRJ_ROOT_DIR}/packet/include)
+set(SRC_ROOT_DIR ${PRJ_ROOT_DIR}/src)
+set(INCLUDE_ROOT_DIR ${PRJ_ROOT_DIR}/include)
 
 
 ################################################################################
@@ -44,7 +44,6 @@ include_directories(${INCLUDE_ROOT_DIR})
 
 set(HEADERS_LIST ${HEADERS_LIST}
   ${INCLUDE_ROOT_DIR}/packet/debug_helper.h
-  ${INCLUDE_ROOT_DIR}/packet/test_defs.h
   ${INCLUDE_ROOT_DIR}/packet/defs.h
   ${INCLUDE_ROOT_DIR}/packet/buffer_part.h
   ${INCLUDE_ROOT_DIR}/packet/buffer_part_impl.h
@@ -53,9 +52,4 @@ set(HEADERS_LIST ${HEADERS_LIST}
   ${INCLUDE_ROOT_DIR}/packet/packet_helper.h
 )
 
-set(LIBS_DEPS "")
-
-add_executable(${PROJECT_NAME} packet/src/test.cpp ${HEADERS_LIST})
-#target_link_libraries(${PROJECT_NAME} ${LIBS_DEPS})
-
-#target_link_libraries(${PROJECT_NAME} ${MODULE_DEPENDENCIES})
+add_executable(${PROJECT_NAME} src/test.cpp ${HEADERS_LIST})

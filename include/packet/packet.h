@@ -7,27 +7,28 @@
 #include <iostream>
 #include <array>
 #include <arpa/inet.h>
+#include <string>
 
 #include <packet/defs.h>
 #include <packet/buffer_part.h>
-#include <packet/pattern.h>
 
 
 namespace packet {
-/**
- * Head and tail patterns if needed, otherwise can be defined as an array of 0 elements
- */
-static constexpr const char HEAD_PATTERN = '<';
-static constexpr const char TAIL_PATTERN = '>';
+
 
 
 /**
  * @brief The Packet class provides an interface for reading a packet and verify if it is
  *        valid or not, also for serializing a piece of data.
+ * @tparam Cfg  The configuration to be used on the packet
  */
-class Packet {
+template<typename Cfg>
+class PacketT {
   public:
 
+    /**
+     * @brief The Status defs of the packet
+     */
     enum class Status {
       INCOMPLETE,
       INVALID,
@@ -35,14 +36,14 @@ class Packet {
     };
 
     
-    /**
-     * @brief MAX_DATA_LEN Definition of how many bytes a packet can have, otherwise will be
-     *        considered invalid and discarded (when parsing it).
-     */
-    static constexpr data_len_t MAX_DATA_LEN = std::numeric_limits<data_len_t>::max();
+    // Extraction of the configuration types here
+    using data_len_t = typename Cfg::data_len_t;
+    static constexpr const int HEAD_PATTERN_SIZE = LengthCalculator<staticLength(Cfg::HEAD_PATTERN)>::value;
+    static constexpr const int TAIL_PATTERN_SIZE = LengthCalculator<staticLength(Cfg::TAIL_PATTERN)>::value;
+
 
   public:
-    inline Packet(void);
+    inline PacketT();
 
     /**
      * @brief Return the current status
@@ -117,9 +118,17 @@ class Packet {
     allData(void) const;
 
 
-    // TODO: move this to the writer
+    /**
+     * @brief Generates a serialized packet from the packet data (content)
+     * @param packet_content  The packet content we wanto to serialize
+     * @param len             The len of the packet
+     * @param out             The output buffer where we want to serialize it
+     * @return true on success | false otherwise
+     */
     static inline bool
-    serialize(const byte_t* data, const data_len_t len, std::ostream& out);
+    serialize(const byte_t* packet_content, const data_len_t len, std::ostream& out);
+    static inline bool
+    serialize(const byte_t* packet_content, const data_len_t len, std::vector<byte_t>& out);
 
 
   private:
@@ -164,6 +173,10 @@ class Packet {
 
 
 #include <packet/packet_impl.h>
+
+
+// Default definition of a packet
+using DefaultPacket = PacketT<DefaultConfig>;
 
 }
 

@@ -12,10 +12,10 @@ I personally used this library for sending different binary serialized messages 
 The packets have the following shape:
 `[ head_pattern | pkt_content_len | content | tail_pattern ]`
 
-- head_pattern: a user defined pattern to detect early wrong or invalid messages over the wire
+- head_pattern: (optional) a user defined pattern to detect early wrong or invalid messages over the wire
 - pkt_content_len: field indicating the size of the content buffer
 - content: the data / content itself
-- tail_pattern: ensure that the packet size was correct and respects the protocol.
+- tail_pattern: (optional) ensure that the packet size was correct and respects the protocol.
 
 
 ## Features
@@ -23,6 +23,15 @@ The packets have the following shape:
 - Serialization of a packet data from its content
 - Support of head / tail patterns for early error detections.
 - Dynamic size and data types.
+
+## Building
+
+I compiled this using g++ but should work on almost any compiler that supports c++14.
+
+```bash
+# clone the repo into
+git clone
+```
 
 
 ## Usage
@@ -68,5 +77,24 @@ const std::string pkt_content(reinterpret_cast<const char*>(packet.data()), pack
 
 ```
 
+Serialization example
+
+```cpp
+
+const std::string packet_content_str = "example of a message content";
+const packet::byte_t* packet_content = reinterpret_cast<const packet::byte_t*>(packet_content_str.data());
+
+
+// packet can be serialized into a ostream or buffer
+std::stringstream stream;
+std::vector<packet::byte_t> buffer;
+
+packet::DefaultPacket::serialize(packet_content, packet_content_str.size(), stream);
+packet::DefaultPacket::serialize(packet_content, packet_content_str.size(), buffer);
+
+```
+
 
 For more usage cases check [tests](src/test.cpp).
+
+

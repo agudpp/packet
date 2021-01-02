@@ -34,8 +34,8 @@ git clone https://github.com/agudpp/packet.git
 # compile the debug version
 cd packet && \
     mkdir -p build && \
-    cd build &&
-    cmake .. &&
+    cd build && \
+    cmake .. && \
     cmake --build . --config Debug -- -j 8
 # run the tests
 ./packet

@@ -30,7 +30,15 @@ I compiled this using g++ but should work on almost any compiler that supports c
 
 ```bash
 # clone the repo into
-git clone
+git clone https://github.com/agudpp/packet.git
+# compile the debug version
+cd packet && \
+    mkdir -p build && \
+    cd build &&
+    cmake .. &&
+    cmake --build . --config Debug -- -j 8
+# run the tests
+./packet
 ```
 
 

@@ -41,9 +41,10 @@ The following pseudocode shows how to read from a `client` (TCP socket for examp
 ```cpp
 // this is an example for a DefaultPacket and there is a client class
 Client client;
+byte_t buff[READ_BUFF_SIZE];
 packet::DefaultPacket pkt;
 // ..
-while (pkt.status() == packet::DefaultPacket::Status::INCOMPLETE) {
+while (pkt.status() == packet::Status::INCOMPLETE) {
     const std::size_t to_read = std::min(pkt.remainingBytes(), READ_BUFF_SIZE);
     const int client_readed = client.readData(buff, to_read);
     if (client_readed <= 0) {
@@ -58,7 +59,7 @@ while (pkt.status() == packet::DefaultPacket::Status::INCOMPLETE) {
 }
 
 // check that the packet was successfully read
-if (packet.status() == packet::DefaultPacket::Status::INVALID) {
+if (packet.status() == packet::Status::INVALID) {
   return Error::INVALID_PACKET;
 }
 

@@ -26,16 +26,6 @@ template<typename Cfg>
 class PacketT {
   public:
 
-    /**
-     * @brief The Status defs of the packet
-     */
-    enum class Status {
-      INCOMPLETE,
-      INVALID,
-      COMPLETE
-    };
-
-    
     // Extraction of the configuration types here
     using data_len_t = typename Cfg::data_len_t;
     static constexpr const int HEAD_PATTERN_SIZE = LengthCalculator<staticLength(Cfg::HEAD_PATTERN)>::value;

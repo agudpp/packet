@@ -115,7 +115,7 @@ inline PacketT<Cfg>::PacketT() :
 
 
 template<typename Cfg>
-inline typename PacketT<Cfg>::Status
+inline Status
 PacketT<Cfg>::status(void) const
 {
   return status_;

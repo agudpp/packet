@@ -91,7 +91,7 @@ testPacketPartsWorks()
   for (auto& part : parts) {
     readPacketPart(part, pkt);
   }
-  TEST_ASSERT(pkt.status() == packet::DefaultPacket::Status::COMPLETE);
+  TEST_ASSERT(pkt.status() == packet::Status::COMPLETE);
   TEST_ASSERT(std::string((const char*)pkt.data(), pkt.dataLen()) == pkt_msg);
 }
 
@@ -105,7 +105,7 @@ testInvalidPacketAreDetected()
         std::string serialized_test = serialized;
         serialized_test[0] = packet::DefaultStartPattern::value[0] + 1;
         auto pkt = readPacket<packet::DefaultPacket>(serialized_test);
-        TEST_ASSERT(pkt.status() == packet::DefaultPacket::Status::INVALID);
+        TEST_ASSERT(pkt.status() == packet::Status::INVALID);
     }
 
     {
@@ -113,7 +113,7 @@ testInvalidPacketAreDetected()
         std::string serialized_test = serialized;
         serialized_test[serialized_test.size() - 1] = packet::DefaultEndPattern::value[0] + 1;
         auto pkt = readPacket<packet::DefaultPacket>(serialized_test);
-        TEST_ASSERT(pkt.status() == packet::DefaultPacket::Status::INVALID);
+        TEST_ASSERT(pkt.status() == packet::Status::INVALID);
     }
 }
 

@@ -7,6 +7,18 @@
 
 namespace packet {
 
+/**
+ * @brief The Status defs of the packet
+ */
+enum class Status {
+  INCOMPLETE,
+  INVALID,
+  COMPLETE
+};
+
+
+
+// we define byte_t as uint8 .. we always ensure they should be the same size
 typedef std::uint8_t byte_t;
 static_assert(sizeof(byte_t) == sizeof(std::uint8_t), "We assume a byte is only 8 bits");
 

@@ -49,7 +49,7 @@ static inline void
 readPacketPart(const std::string& serializedData, PacketType& pkt)
 {
   std::size_t data_ptr = 0;
-  while (pkt.status() == PacketType::Status::INCOMPLETE && data_ptr < serializedData.size()) {
+  while (pkt.status() == packet::Status::INCOMPLETE && data_ptr < serializedData.size()) {
     TEST_ASSERT(pkt.remainingBytes() > 0);
     const std::size_t to_read = std::min(pkt.remainingBytes(), serializedData.size() - data_ptr);
     const std::size_t read = pkt.appendData(reinterpret_cast<const packet::byte_t*>(serializedData.data() + data_ptr), to_read);
@@ -103,7 +103,7 @@ checkSerializeAndUnserialize(const std::string& packetContent)
 
     const PacketType p = readPacket<PacketType>(serialized);
     std::cout << "packet status: " << int(p.status()) << "\n";
-    return (p.status() == PacketType::Status::COMPLETE) &&
+    return (p.status() == packet::Status::COMPLETE) &&
            std::string((const char*)p.data(), p.dataLen()) == packetContent;
 }
 

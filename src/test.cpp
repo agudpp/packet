@@ -11,6 +11,24 @@
 
 
 void
+testPacketLengthCalculation()
+{
+    // serialize a pakcet with different configuration should work
+    struct TestConfig : packet::ConfigT<
+              packet::DefaultStartPattern,
+              packet::DefaultEndPattern,
+              std::uint32_t,
+              10
+              >{};
+    using Packet = packet::PacketT<TestConfig>;
+    const std::size_t expectedSize = (sizeof(char) * 2) +   // start and end default pattern
+                                     sizeof(std::uint32_t) +
+                                     10;
+    TEST_ASSERT(Packet::PACKET_MAX_SIZE == expectedSize);
+}
+
+
+void
 testSimplePackets()
 {
     const std::vector<std::string> packetContents {
@@ -120,6 +138,7 @@ testInvalidPacketAreDetected()
 int
 main(void)
 {
+    testPacketLengthCalculation();
     testSimplePackets();
     testDifferentPacketConfigWorks();
     testSerializationAPIsWork();

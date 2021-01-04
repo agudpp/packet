@@ -31,6 +31,15 @@ class PacketT {
     static constexpr const int HEAD_PATTERN_SIZE = LengthCalculator<staticLength(Cfg::HEAD_PATTERN)>::value;
     static constexpr const int TAIL_PATTERN_SIZE = LengthCalculator<staticLength(Cfg::TAIL_PATTERN)>::value;
 
+    /**
+     * @brief PACKET_MAX_SIZE is the maximum number of bytes a packet can occupy after
+     *                        being serialized
+     */
+    static constexpr const std::size_t PACKET_MAX_SIZE = HEAD_PATTERN_SIZE +
+                                                         TAIL_PATTERN_SIZE +
+                                                         sizeof(data_len_t) +
+                                                         Cfg::MAX_DATA_LEN;
+
 
   public:
     inline PacketT();
